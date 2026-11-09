@@ -14,7 +14,9 @@
 - [Real-World Benchmark (Proof of Concept)](#-real-world-benchmark-proof-of-concept)
 - [What the Prompt Automates](#what-the-prompt-automates)
 - [Target Use Cases for Revived Tablets](#target-use-cases-for-revived-tablets)
+- [🏠 Optional Add-on: Home Assistant Touchscreen Kiosk](#-optional-add-on-home-assistant-touchscreen-kiosk-tileboard)
 - [Prerequisites](#prerequisites)
+- [License](#-license)
 
 ---
 
@@ -117,18 +119,62 @@ Tunes Android system window manager animation parameters (`window_animation_scal
 
 Once debloated, an old 512MB–1GB tablet with Wi-Fi, audio jack, and USB-OTG is ideal for:
 
-1. **PC Sensor / Hardware Monitor**:
-   - Place inside a transparent PC chassis or under your primary monitor.
-   - Stream real-time CPU/GPU temperatures, clocks, fan speeds, and RAM load via USB or local Wi-Fi.
-2. **Smart Home / Home Assistant Touchscreen**:
-   - Mount on a wall or desk stand as an always-on room controller (lighting, climate, clock).
-3. **Retro Emulation Station**:
-   - Single-core ARMv7 + Mali-400 easily runs NES, SNES, Game Boy Advance, and Sega Genesis at full **60 FPS**.
-   - Plug in a standard USB gamepad using a \$1 USB-OTG adapter.
-4. **Hi-Fi Internet Radio & Music Player**:
-   - Connect via 3.5mm AUX to an amplifier or speakers for dedicated music streaming or offline playback via MicroSD.
-5. **Distraction-Free E-Reader**:
-   - Run lightweight reading apps (e.g., legacy FBReader or Cool Reader). With Wi-Fi off, standby battery lasts for days.
+1. **PC Sensor / Hardware Monitor**: Stream real-time CPU/GPU temperatures, clocks, fan speeds, and RAM load via USB or local Wi-Fi.
+2. **Smart Home / Home Assistant Touchscreen**: Mount on a wall or desk stand as an always-on room controller. *(See optional add-on below)*.
+3. **Retro Emulation Station**: Single-core ARMv7 + Mali-400 easily runs NES, SNES, Game Boy Advance, and Sega Genesis at full **60 FPS** with a USB gamepad.
+4. **Hi-Fi Internet Radio & Music Player**: Connect via 3.5mm AUX to an amplifier or speakers for dedicated music streaming or offline playback via MicroSD.
+5. **Distraction-Free E-Reader**: Run lightweight reading apps (e.g., legacy FBReader or Cool Reader) with days of standby battery life.
+
+---
+
+## 🏠 Optional Add-on: Home Assistant Touchscreen Kiosk (TileBoard)
+
+> **Note:** This is an optional extension. If your goal is to turn the revived tablet into a dedicated 24/7 Smart Home Wall Panel, use this add-on prompt and deployment recipe.
+
+### Why TileBoard?
+Modern Home Assistant frontend (Lovelace) requires modern Web Components, ES6+ JS, and CSS Grid, which fail on older Android WebViews. **[TileBoard](https://github.com/CrilleBaba/TileBoard)** is an ultra-lightweight, customizable dashboard built specifically for legacy wall tablets. It communicates directly with Home Assistant's WebSocket API (`ws://<HA-IP>:8123/api/websocket`) using minimal RAM (~15-25 MB).
+
+### 🤖 The Optional Kiosk Add-on Prompt
+
+Copy and paste this into your AI assistant session after the tablet is debloated:
+
+```markdown
+Configure this connected Android tablet for 24/7 Home Assistant Kiosk Wall Panel duty:
+
+1. Kiosk Keep-Awake Settings:
+   - Configure Wi-Fi to never sleep when idle: `settings put global wifi_sleep_policy 2`
+   - Keep screen permanently awake while connected to USB/AC power: `settings put global stay_on_while_plugged_in 7`
+   - Set fallback screen timeout: `settings put system screen_off_timeout 1800000`
+
+2. Lightweight Browser:
+   - Install a lightweight, low-RAM browser with full-screen kiosk support (e.g., Lightning Browser from F-Droid, ~2.3MB APK footprint).
+
+3. Provide a tailored TileBoard configuration blueprint (`config.js`) matching the tablet's resolution (e.g., 800x480) with tiles for Clock, Weather, Lights, Switches, and Thermostat.
+```
+
+### 🛠️ Quick TileBoard Setup Recipe
+
+1. **Download TileBoard**: Grab the pre-compiled release from [TileBoard Releases](https://github.com/CrilleBaba/TileBoard/releases) (e.g. `TileBoard_build_2.10.2.zip`).
+2. **Deploy to Home Assistant**: Extract the contents into your Home Assistant `/config/www/tileboard/` directory.
+3. **Generate Token**: In Home Assistant, go to **User Profile > Long-Lived Access Tokens**, create a token, and copy it.
+4. **Configure `config.js`**: Rename `config.example.js` to `config.js` and set:
+   ```javascript
+   var CONFIG = {
+      tileSize: 120, // Tuned for 800x480 screens
+      tileMargin: 6,
+      serverUrl: "http://<YOUR_HA_IP>:8123",
+      wsUrl: "ws://<YOUR_HA_IP>:8123/api/websocket",
+      authToken: "YOUR_LONG_LIVED_ACCESS_TOKEN",
+      fullscreen: true,
+      hideScrollbar: true,
+      pages: [ /* your tiles here */ ]
+   };
+   ```
+5. **Open on Tablet**: In Lightning Browser, navigate to:
+   ```text
+   http://<YOUR_HA_IP>:8123/local/tileboard/index.html
+   ```
+   Toggle **Full Screen Mode** in the browser menu for a bezel-to-bezel smart home controller.
 
 ---
 
