@@ -2,6 +2,10 @@
 
 Copy and paste the prompt below into your AI Agent (Antigravity, Cursor, Claude Code, ChatGPT, etc.) when your old Android tablet is connected via USB:
 
+---
+
+## 🎯 Main Prompt (Diagnostic, Benchmark & Debloat)
+
 ```markdown
 You are an expert embedded systems and Android performance optimization engineer. 
 A legacy Android tablet is connected to this host computer via USB.
@@ -42,4 +46,24 @@ Once confirmed or instructed:
    - Free `/data` storage
    - Background process count
 2. Present tailored, realistic modern use cases matching the hardware profile (e.g., PC Hardware Monitor screen, Home Assistant dashboard, Retro Emulation station, Desk Clock / Hi-Fi Audio player, Distraction-free E-Reader).
+```
+
+---
+
+## 🏠 Optional Add-on Prompt: Home Assistant Kiosk (TileBoard)
+
+> **Run this optional follow-up prompt only if you want to turn the tablet into a 24/7 Home Assistant wall-mount dashboard:**
+
+```markdown
+Configure this connected Android tablet for 24/7 Home Assistant Kiosk Wall Panel duty:
+
+1. Kiosk Keep-Awake Settings:
+   - Configure Wi-Fi to never sleep when idle: `settings put global wifi_sleep_policy 2`
+   - Keep screen permanently awake while connected to USB/AC power: `settings put global stay_on_while_plugged_in 7`
+   - Set fallback screen timeout: `settings put system screen_off_timeout 1800000`
+
+2. Lightweight Browser:
+   - Install a lightweight, low-RAM browser with full-screen kiosk support (e.g., Lightning Browser from F-Droid, ~2.3MB APK footprint).
+
+3. Provide a tailored TileBoard configuration blueprint (`config.js`) matching the tablet's resolution (e.g., 800x480) with tiles for Clock, Weather, Lights, Switches, and Thermostat.
 ```
